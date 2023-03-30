@@ -1,7 +1,11 @@
-const Home = () => (
-  <>
-    <h1 className='text-6xl'>Welcome</h1>
-  </>
-);
+import UserResults from '../users/UserResults';
+
+const Home = () => {
+  return (
+    <>
+      <UserResults />
+    </>
+  )
+};
 
 export default Home;
