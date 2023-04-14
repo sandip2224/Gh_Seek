@@ -1,6 +1,4 @@
 const githubReducer = (state, action) => {
-  console.log("------ State: ", state)
-  console.log("------ Action: ", action)
   switch (action.type) {
     case 'GET_USERS':
       return {
@@ -12,6 +10,11 @@ const githubReducer = (state, action) => {
       return {
         ...state,
         loading: true
+      }
+    case 'CLEAR_USERS':
+      return {
+        ...state,
+        users: []
       }
     default:
       return state
