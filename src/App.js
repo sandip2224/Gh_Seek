@@ -1,6 +1,8 @@
 import './index.css'
+import 'react-toastify/dist/ReactToastify.css';
 
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
 
 import Navbar from './components/layout/Navbar'
 import Footer from './components/layout/Footer'
@@ -20,6 +22,7 @@ function App() {
       <AlertProvider>
         <>
           <Router>
+            <ToastContainer autoClose={2500} />
             <div className='App flex flex-col justify-between h-screen'>
               <Navbar />
               <main className='container mx-auto px-3 pb-12'>
