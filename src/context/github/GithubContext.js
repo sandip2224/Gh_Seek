@@ -13,14 +13,15 @@ export const GithubProvider = ({ children }) => {
     users: [],
     user: {},
     repos: [],
-    loading: false
+    loading: false,
+    error: false
   }
 
   const [state, dispatch] = useReducer(githubReducer, initialState)
 
   // Get search results
   const searchUsers = async (text) => {
-    setLoading()
+    setLoading(true)
 
     const params = new URLSearchParams({
       q: text
@@ -33,21 +34,29 @@ export const GithubProvider = ({ children }) => {
         }
       })
 
+      if (response.status !== 200) {
+        throw new Error('Something went wrong!');
+      }
+
       const { items } = await response.json()
+
+      setLoading(false)
       successToast("Users fetched successfully!")
       dispatch({
-        type: 'GET_USERS',
+        type: 'SET_USERS',
         payload: items
       })
     }
     catch (err) {
+      setLoading(false)
+      setErrorStatus()
       errorToast(err)
     }
   }
 
   // Get singleUser
   const getUser = async (username) => {
-    setLoading()
+    setLoading(true)
 
     try {
       const response = await fetch(`${GITHUB_URL}/users/${username}`, {
@@ -56,6 +65,7 @@ export const GithubProvider = ({ children }) => {
         }
       })
 
+      setLoading(false)
       if (response.status === 404) {
         window.location = '/notfound'
         infoToast('User not found!')
@@ -64,38 +74,56 @@ export const GithubProvider = ({ children }) => {
         const data = await response.json()
         successToast('User fetched successfully!')
         dispatch({
-          type: 'GET_USER',
+          type: 'SET_USER',
           payload: data
         })
       }
     }
     catch (err) {
+      setLoading(false)
+      setErrorStatus()
       errorToast(err)
     }
   }
 
   const getUserRepos = async (username) => {
-    setLoading()
+    setLoading(true)
 
     try {
-      const response = await fetch(`${GITHUB_URL}/users/${username}/repos?per_page=5&sort=created:asc`)
+      const response = await fetch(`${GITHUB_URL}/users/${username}/repos?per_page=10&sort=created:desc`)
+
+      if (response.status !== 200) {
+        throw new Error('Something went wrong!');
+      }
+
       const data = await response.json()
 
+      setLoading(false)
       successToast('Repositories fetched successfully!')
       dispatch({
-        type: 'GET_REPOS',
+        type: 'SET_REPOS',
         payload: data
       });
     }
     catch (err) {
+      setLoading(false)
+      setErrorStatus()
       errorToast(err)
     }
   };
 
   // Set loading
-  const setLoading = () => {
+  const setLoading = (status) => {
     dispatch({
-      type: 'SET_LOADING'
+      type: 'SET_LOADING',
+      payload: status
+    })
+  }
+
+  // Set loading
+  const setErrorStatus = () => {
+    dispatch({
+      type: 'SET_ERROR'
     })
   }
 
@@ -111,6 +139,7 @@ export const GithubProvider = ({ children }) => {
     loading: state.loading,
     user: state.user,
     repos: state.repos,
+    error: state.error,
     searchUsers,
     getUser,
     getUserRepos,
