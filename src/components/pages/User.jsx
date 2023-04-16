@@ -1,23 +1,26 @@
-import { FaCodepen, FaStore, FaUserFriends, FaUsers } from 'react-icons/fa'
-import { useEffect, useContext } from 'react'
+import { FaCodepen, FaStore, FaUserFriends, FaUsers } from 'react-icons/fa';
+import { useEffect, useContext } from 'react';
 
-import { Link, useParams } from 'react-router-dom'
-import Spinner from '../layout/Spinner'
+import { Link, useParams } from 'react-router-dom';
+import Spinner from '../layout/Spinner';
 
-import GithubContext from '../../context/github/GithubContext'
-import RepoList from '../repos/RepoList'
+import GithubContext from '../../context/github/GithubContext';
+import RepoList from '../repos/RepoList';
 
 function User() {
-	const { getUser, user, loading } = useContext(GithubContext)
+	const { getUser, getUserRepos, user, loading, repos } =
+		useContext(GithubContext);
 
-	const params = useParams()
+	const params = useParams();
 
 	useEffect(() => {
-		getUser(params.username)
-	}, [])
+		getUser(params.username);
+		getUserRepos(params.username);
+		// eslint-disable-next-line
+	}, []);
 
 	if (loading) {
-		return <Spinner />
+		return <Spinner />;
 	} else {
 		const {
 			name,
@@ -34,7 +37,7 @@ function User() {
 			public_repos,
 			public_gists,
 			hireable,
-		} = user
+		} = user;
 
 		return (
 			<>
@@ -52,9 +55,7 @@ function User() {
 									<img src={avatar_url} alt='' />
 								</figure>
 								<div className='card-body justify-end'>
-									<div className='card-title mb-0'>
-										{name}
-									</div>
+									<div className='card-title mb-0'>{name}</div>
 									<p>{login}</p>
 								</div>
 							</div>
@@ -64,13 +65,9 @@ function User() {
 							<div className='mb-6'>
 								<h1 className='text-3xl card-title'>
 									{name}
-									<div className='ml-2 mr-1 badge badge-success'>
-										{type}
-									</div>
+									<div className='ml-2 mr-1 badge badge-success'>{type}</div>
 									{hireable && (
-										<div className='mx-1 badge badge-info'>
-											Hireable
-										</div>
+										<div className='mx-1 badge badge-info'>Hireable</div>
 									)}
 								</h1>
 								<p>{bio}</p>
@@ -89,25 +86,15 @@ function User() {
 							<div className='w-full rounded-lg shadow-md bg-base-100 stats'>
 								{location && (
 									<div className='stat'>
-										<div className='stat-title text-md'>
-											Location
-										</div>
-										<div className='text-lg stat-value'>
-											{location}
-										</div>
+										<div className='stat-title text-md'>Location</div>
+										<div className='text-lg stat-value'>{location}</div>
 									</div>
 								)}
 								{blog && (
 									<div className='stat'>
-										<div className='stat-title text-md'>
-											Website
-										</div>
+										<div className='stat-title text-md'>Website</div>
 										<div className='text-lg stat-value'>
-											<a
-												href={blog}
-												target='_blank'
-												rel='noreferrer'
-											>
+											<a href={blog} target='_blank' rel='noreferrer'>
 												{blog}
 											</a>
 										</div>
@@ -115,9 +102,7 @@ function User() {
 								)}
 								{twitter_username && (
 									<div className='stat'>
-										<div className='stat-title text-md'>
-											Twitter
-										</div>
+										<div className='stat-title text-md'>Twitter</div>
 										<div className='text-lg stat-value'>
 											<a
 												href={`https://twitter.com/${twitter_username}`}
@@ -170,11 +155,11 @@ function User() {
 							</div>
 						</div>
 					</div>
-					{/* <RepoList repos={} /> */}
+					<RepoList repos={repos} />
 				</div>
 			</>
-		)
+		);
 	}
 }
 
-export default User
+export default User;
