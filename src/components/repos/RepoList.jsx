@@ -1,4 +1,5 @@
-import React from 'react'
+import React from 'react';
+import RepoItem from './RepoItem';
 
 function RepoList({ repos }) {
 	return (
@@ -8,11 +9,11 @@ function RepoList({ repos }) {
 					Latest Respositories
 				</h2>
 				{repos.map((repo) => (
-					<h3>{repo.name}</h3>
+					<RepoItem key={repo.id} repo={repo} />
 				))}
 			</div>
 		</div>
-	)
+	);
 }
 
-export default RepoList
+export default RepoList;
